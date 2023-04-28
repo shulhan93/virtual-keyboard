@@ -17,7 +17,7 @@ body {
 :root {
   --primary-color: #eaeaea;
   --second-color: #c7cbce;
-  --third-color: #e1b849;
+  --third-color: #bce2f3;
   --basis-color: #f4f3f3;
 }
 
@@ -54,7 +54,7 @@ body {
   background-color: var(--primary-color);
   border-radius: 5px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.1s;
 }
 
 .key:hover {
@@ -63,6 +63,10 @@ body {
 
 .key:active {
   transform: scale(0.97);
+}
+
+.key_press {
+  transform: scale(0.7);
 }
 
 .key_control {
