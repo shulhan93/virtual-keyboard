@@ -704,6 +704,7 @@ const keys = [
 function createKey(obj) {
   const btn = document.createElement('button');
   btn.classList.add('key');
+  btn.id = obj.key;
   btn.innerHTML = obj.en.lowerCase;
   if (obj.control) {
     btn.classList.add('key_control');
@@ -742,6 +743,27 @@ function createKeyboard() {
 
   return keyboard;
 }
+const keysPress = new Map();
+
+function keyDown(e) {
+  if (e.repeat) {
+    return;
+  }
+
+  const btn = document.querySelector(`#${e.code}`);
+  btn.classList.add('key_press');
+  keysPress.set(e.code, btn);
+}
+
+function keyUp(e) {
+  if (keysPress.has(e.code)) {
+    keysPress.get(e.code).classList.remove('key_press');
+    keysPress.delete(e.code);
+  }
+}
+
+document.addEventListener('keydown', keyDown);
+document.addEventListener('keyup', keyUp);
 
 function init() {
   document.body.innerHTML = '';
