@@ -745,19 +745,51 @@ function createKeyboard() {
 }
 const keysPress = new Map();
 
+function pressCaps(up = false) {
+  document.querySelectorAll('.key').forEach((el) => {
+    if (el.id.startsWith('Key') && !up) {
+      el.innerHTML = el.innerHTML.toLocaleUpperCase();
+    } else if (el.id.startsWith('Key') && up) {
+      el.innerHTML = el.innerHTML.toLowerCase();
+    }
+  });
+}
+
 function keyDown(e) {
   if (e.repeat) {
     return;
   }
 
   const btn = document.querySelector(`#${e.code}`);
-  btn.classList.add('key_press');
-  keysPress.set(e.code, btn);
+
+  switch (e.key) {
+  case 'CapsLock': {
+    btn.classList.add('active');
+    pressCaps();
+    keysPress.set(e.code, btn);
+
+    break;
+  }
+  default: {
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+    break;
+  }
+  }
 }
 
 function keyUp(e) {
+  switch (e.key) {
+  case 'CapsLock': {
+    pressCaps(true);
+    break;
+  }
+  default: {
+    break;
+  }
+  }
   if (keysPress.has(e.code)) {
-    keysPress.get(e.code).classList.remove('key_press');
+    keysPress.get(e.code).classList.remove('key_press', 'active');
     keysPress.delete(e.code);
   }
 }
