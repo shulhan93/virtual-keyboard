@@ -22,6 +22,8 @@ body {
 }
 
 .container {
+  display: flex;
+  justify-content: center;
   padding-top: 100px;
   margin: 0 auto;
   max-width: 900px;
@@ -29,17 +31,20 @@ body {
 
 .keyboard {
   display: grid;
-  gap: 10px;
+  gap: 8px;
+  width: 750px;
+  padding: 0 20px;
   padding-top: 40px;
   padding-bottom: 40px;
-  justify-content: center;
+
   background-color: var(--basis-color);
   border-radius: 10px;
 }
 
 .row {
   display: flex;
-  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .key {
@@ -49,20 +54,33 @@ body {
   background-color: var(--primary-color);
   border-radius: 5px;
   cursor: pointer;
+  transition: all 0.3s;
+}
+
+.key:hover {
+  transform: translateY(-1px) scale(1.04);
+}
+
+.key:active {
+  transform: scale(0.97);
 }
 
 .key_control {
   background-color: var(--second-color);
 }
 
-.key_yellow {
+.key_colorful {
   background-color: var(--third-color);
-}
-
-.key_2x {
-  width: 80px;
 }
 
 .key_1-5x {
   width: 60px;
+}
+
+.key_2x {
+  width: 90px;
+}
+
+.key_space {
+  width: 270px;
 }
