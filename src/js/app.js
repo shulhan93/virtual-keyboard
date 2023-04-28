@@ -755,6 +755,20 @@ function pressCaps(up = false) {
   });
 }
 
+function pressShift(up = false) {
+  for (const row of keys) {
+    for (const obj of row) {
+      if (!up) {
+        if (obj.en.shift) {
+          document.querySelector(`#${obj.key}`).innerHTML = obj.en.shift;
+        }
+      } else {
+        document.querySelector(`#${obj.key}`).innerHTML = obj.en.lowerCase;
+      }
+    }
+  }
+}
+
 function keyDown(e) {
   if (e.repeat) {
     return;
@@ -770,6 +784,12 @@ function keyDown(e) {
 
     break;
   }
+  case 'Shift': {
+    pressShift();
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+    break;
+  }
   default: {
     btn.classList.add('key_press');
     keysPress.set(e.code, btn);
@@ -782,6 +802,10 @@ function keyUp(e) {
   switch (e.key) {
   case 'CapsLock': {
     pressCaps(true);
+    break;
+  }
+  case 'Shift': {
+    pressShift(true);
     break;
   }
   default: {
