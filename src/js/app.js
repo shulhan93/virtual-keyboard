@@ -832,9 +832,9 @@ function keyDown(e) {
   case 'Enter': {
     btn.classList.add('key_press');
     keysPress.set(e.code, btn);
-    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret - 1)
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret)
     }\n${textareaCopy.value.substring(positionCaret)}`;
-    textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    textareaCopy.setSelectionRange(positionCaret + 1, positionCaret + 1);
     break;
   }
   case 'Delete': {
@@ -843,6 +843,16 @@ function keyDown(e) {
     textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
     + textareaCopy.value.substring(positionCaret + 1);
     textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    break;
+  }
+
+  case 'Tab': {
+    e.preventDefault();
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret)
+    }    ${textareaCopy.value.substring(positionCaret)}`;
+    textareaCopy.setSelectionRange(positionCaret + 4, positionCaret + 4);
     break;
   }
   default: {
@@ -911,9 +921,9 @@ function clickKey(e) {
   }
 
   case 'Enter': {
-    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret - 1)
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret)
     }\n${textareaCopy.value.substring(positionCaret)}`;
-    textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    textareaCopy.setSelectionRange(positionCaret + 1, positionCaret + 1);
     break;
   }
 
@@ -921,6 +931,13 @@ function clickKey(e) {
     textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
     + textareaCopy.value.substring(positionCaret + 1);
     textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    break;
+  }
+
+  case 'Tab': {
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret)
+    }    ${textareaCopy.value.substring(positionCaret)}`;
+    textareaCopy.setSelectionRange(positionCaret + 4, positionCaret + 4);
     break;
   }
   }
