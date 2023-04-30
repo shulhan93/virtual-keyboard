@@ -701,25 +701,28 @@ const keys = [
   ],
 ];
 
+let lang = 'en';
+const LOCALSTORAGENAME = 'virtual-keyboards-rs';
+
 function createKey(obj) {
   const btn = document.createElement('button');
   btn.classList.add('key');
   btn.id = obj.key;
-  btn.innerHTML = obj.en.lowerCase;
+  btn.innerHTML = obj[lang].lowerCase;
   if (obj.control) {
     btn.classList.add('key_control');
   }
-  if (obj.en.lowerCase === ' ' || obj.en.lowerCase === 'Enter' || obj.en.lowerCase === 'Tab') {
+  if (obj[lang].lowerCase === ' ' || obj[lang].lowerCase === 'Enter' || obj[lang].lowerCase === 'Tab') {
     btn.classList.add('key_colorful');
   }
-  if (obj.en.lowerCase === 'Backspace'
-      || obj.en.lowerCase === 'CapsLock'
-      || obj.en.lowerCase === 'Enter'
+  if (obj[lang].lowerCase === 'Backspace'
+      || obj[lang].lowerCase === 'CapsLock'
+      || obj[lang].lowerCase === 'Enter'
       || obj.key === 'ShiftLeft') {
     btn.classList.add('key_2x');
-  } else if (obj.en.lowerCase === 'Tab' || obj.en.lowerCase === 'Ctrl') {
+  } else if (obj[lang].lowerCase === 'Tab' || obj[lang].lowerCase === 'Ctrl') {
     btn.classList.add('key_1-5x');
-  } else if (obj.en.lowerCase === ' ') {
+  } else if (obj[lang].lowerCase === ' ') {
     btn.classList.add('key_space');
   }
 
@@ -743,6 +746,7 @@ function createKeyboard() {
 
   return keyboard;
 }
+
 const keysPress = new Map();
 
 function pressCaps(up = false) {
@@ -759,13 +763,30 @@ function pressShift(up = false) {
   for (const row of keys) {
     for (const obj of row) {
       if (!up) {
-        if (obj.en.shift) {
-          document.querySelector(`#${obj.key}`).innerHTML = obj.en.shift;
+        if (obj[lang].shift) {
+          document.querySelector(`#${obj.key}`).innerHTML = obj[lang].shift;
         }
       } else {
-        document.querySelector(`#${obj.key}`).innerHTML = obj.en.lowerCase;
+        document.querySelector(`#${obj.key}`).innerHTML = obj[lang].lowerCase;
       }
     }
+  }
+}
+
+function changeLang(language) {
+  const copyKeysArr = keys.flat();
+  lang = language;
+  localStorage.setItem(LOCALSTORAGENAME, lang);
+  for (let i = 0; i < copyKeysArr.length; i++) {
+    document.querySelector(`#${copyKeysArr[i].key}`).innerHTML = copyKeysArr[i][lang].lowerCase;
+  }
+}
+
+function detectLang() {
+  if (lang === 'en') {
+    changeLang('ru');
+  } else {
+    changeLang('en');
   }
 }
 
@@ -773,8 +794,13 @@ function keyDown(e) {
   if (e.repeat) {
     return;
   }
-
   const btn = document.querySelector(`#${e.code}`);
+
+  if (e.ctrlKey && e.code === 'ShiftLeft') {
+    detectLang();
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+  }
 
   switch (e.key) {
   case 'CapsLock': {
@@ -822,7 +848,10 @@ document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
 
 function init() {
-  document.body.innerHTML = '';
+  if (!localStorage.getItem(LOCALSTORAGENAME)) {
+    localStorage.setItem(LOCALSTORAGENAME, lang);
+  }
+  lang = localStorage.getItem(LOCALSTORAGENAME);
 
   const container = document.createElement('div');
   container.classList.add('container');
