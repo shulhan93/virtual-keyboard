@@ -785,16 +785,12 @@ function createKey(obj) {
 // Key Down
 function keyDown(e) {
   positionCaret = textareaCopy.selectionStart;
-  console.log(positionCaret);
-  // if (e.repeat) {
-  //   return;
-  // }
+
   textareaCopy.focus();
 
   const btn = document.querySelector(`#${e.code}`);
 
   if (btn.id.startsWith('Arrow') || isNotControlBtn(btn)) {
-    // textareaCopy.value += btn.textContent;
     textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
     + btn.textContent + textareaCopy.value.substring(positionCaret);
     textareaCopy.setSelectionRange(positionCaret + 1, positionCaret + 1);
@@ -832,9 +828,9 @@ function keyDown(e) {
   case 'Enter': {
     btn.classList.add('key_press');
     keysPress.set(e.code, btn);
-    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret - 1)
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret)
     }\n${textareaCopy.value.substring(positionCaret)}`;
-    textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    textareaCopy.setSelectionRange(positionCaret + 1, positionCaret + 1);
     break;
   }
   case 'Delete': {
@@ -843,6 +839,16 @@ function keyDown(e) {
     textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
     + textareaCopy.value.substring(positionCaret + 1);
     textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    break;
+  }
+
+  case 'Tab': {
+    e.preventDefault();
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret)
+    }    ${textareaCopy.value.substring(positionCaret)}`;
+    textareaCopy.setSelectionRange(positionCaret + 4, positionCaret + 4);
     break;
   }
   default: {
@@ -876,22 +882,14 @@ function keyUp(e) {
 
 function clickKey(e) {
   positionCaret = textareaCopy.selectionStart;
-  console.log(e);
   textareaCopy.focus();
   const btn = e.target;
 
   if (btn.id.startsWith('Arrow') || e.target.classList.contains('key') && isNotControlBtn(e.target)) {
-    // textareaCopy.value += e.target.textContent;
     textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
     + btn.textContent + textareaCopy.value.substring(positionCaret);
     textareaCopy.setSelectionRange(positionCaret + 1, positionCaret + 1);
   }
-
-  // if (e.ctrlKey && e.code === 'ShiftLeft') {
-  //   detectLang();
-  //   btn.classList.add('key_press');
-  //   keysPress.set(e.code, btn);
-  // }
 
   switch (e.target.id) {
   case 'Backspace': {
@@ -905,15 +903,17 @@ function clickKey(e) {
     btn.classList.toggle('active');
     break;
   }
+  case 'ShiftRight':
   case 'ShiftLeft': {
-    pressShift();
+    console.log('s  ');
+    pressShift(true);
     break;
   }
 
   case 'Enter': {
-    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret - 1)
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret)
     }\n${textareaCopy.value.substring(positionCaret)}`;
-    textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    textareaCopy.setSelectionRange(positionCaret + 1, positionCaret + 1);
     break;
   }
 
@@ -921,6 +921,13 @@ function clickKey(e) {
     textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
     + textareaCopy.value.substring(positionCaret + 1);
     textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    break;
+  }
+
+  case 'Tab': {
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret)
+    }    ${textareaCopy.value.substring(positionCaret)}`;
+    textareaCopy.setSelectionRange(positionCaret + 4, positionCaret + 4);
     break;
   }
   }
@@ -935,17 +942,29 @@ function isNotControlBtn(btn) {
 
 function pressCaps(up = false) {
   document.querySelectorAll('.key').forEach((el) => {
-    if (el.id.startsWith('Key') && !up) {
-      el.innerHTML = el.innerHTML.toLocaleUpperCase();
-    } else if (el.id.startsWith('Key') && up) {
-      el.innerHTML = el.innerHTML.toLowerCase();
+    const key = el;
+    if (key.id.startsWith('Key') && !up) {
+      key.innerHTML = key.innerHTML.toLocaleUpperCase();
+    } else if (key.id.startsWith('Key') && up) {
+      key.innerHTML = key.innerHTML.toLowerCase();
     }
   });
 }
 
 function pressShift(up = false) {
+  const caps = document.querySelector('#CapsLock');
   for (const row of keys) {
     for (const obj of row) {
+      if (caps.classList.contains('active') && !up) {
+        document.querySelector(`#${obj.key}`).innerHTML = obj[lang].lowerCase;
+        if (obj[lang].shift) {
+          document.querySelector(`#${obj.key}`).innerHTML = obj[lang].shift.toLowerCase();
+        }
+      } else if (caps.classList.contains('active') && up) {
+        if (obj[lang].shift) {
+          document.querySelector(`#${obj.key}`).innerHTML = obj[lang].lowerCase.toLocaleUpperCase();
+        }
+      } else
       if (!up) {
         if (obj[lang].shift) {
           document.querySelector(`#${obj.key}`).innerHTML = obj[lang].shift;
@@ -976,13 +995,17 @@ function detectLang() {
 
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
-keyboardCopy.addEventListener('click', clickKey);
+keyboardCopy.addEventListener('mouseup', clickKey);
+keyboardCopy.addEventListener('mousedown', (e) => {
+  if (e.target.id === 'ShiftLeft' || e.target.id === 'ShiftRight') {
+    pressShift();
+  }
+});
+
 textareaCopy.addEventListener('keydown', (e) => {
   e.preventDefault();
 });
 
-textareaCopy.addEventListener('click', (e) => {
+textareaCopy.addEventListener('click', () => {
   positionCaret = textareaCopy.selectionStart;
 });
-
-// console.log(textareaCopy.selectionStart);

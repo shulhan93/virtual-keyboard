@@ -153,7 +153,11 @@ body {
   margin-top: 15px;
   background-color: var(--primary-color);
   color: #353434b3;
-  font-weight: 600;
+  font-weight: 400;
   padding: 10px 15px;
   border-radius: 10px;
+}
+
+.description span {
+  font-weight: 900;
 }
