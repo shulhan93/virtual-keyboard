@@ -703,7 +703,51 @@ const keys = [
 
 let lang = 'en';
 const LOCALSTORAGENAME = 'virtual-keyboards-rs';
+let textareaCopy;
+let keyboardCopy;
+const keysPress = new Map();
+let positionCaret = 0;
 
+function init() {
+  if (!localStorage.getItem(LOCALSTORAGENAME)) {
+    localStorage.setItem(LOCALSTORAGENAME, lang);
+  }
+  lang = localStorage.getItem(LOCALSTORAGENAME);
+
+  const container = document.createElement('div');
+  container.classList.add('container');
+
+  const textarea = document.createElement('textarea');
+  textarea.setAttribute('id', 'textarea');
+  textareaCopy = textarea;
+
+  const keyboard = createKeyboard();
+  keyboardCopy = keyboard;
+  container.append(textarea, keyboard);
+  document.body.append(container);
+}
+init();
+
+// Create keyboard
+function createKeyboard() {
+  const keyboard = document.createElement('div');
+  keyboard.classList.add('keyboard');
+
+  for (let i = 0; i < 5; i++) {
+    const row = document.createElement('div');
+    row.classList.add('row');
+
+    keys[i].forEach((el) => {
+      row.append(createKey(el));
+    });
+
+    keyboard.append(row);
+  }
+
+  return keyboard;
+}
+
+// Create keys
 function createKey(obj) {
   const btn = document.createElement('button');
   btn.classList.add('key');
@@ -733,25 +777,119 @@ function createKey(obj) {
   return btn;
 }
 
-function createKeyboard() {
-  const keyboard = document.createElement('div');
-  keyboard.classList.add('keyboard');
+// Key Down
+function keyDown(e) {
+  positionCaret = textareaCopy.selectionStart;
+  console.log(positionCaret);
+  // if (e.repeat) {
+  //   return;
+  // }
+  textareaCopy.focus();
 
-  for (let i = 0; i < 5; i++) {
-    const row = document.createElement('div');
-    row.classList.add('row');
+  const btn = document.querySelector(`#${e.code}`);
 
-    keys[i].forEach((el) => {
-      row.append(createKey(el));
-    });
-
-    keyboard.append(row);
+  if (isNotControlBtn(btn)) {
+    textareaCopy.value += btn.textContent;
   }
 
-  return keyboard;
+  if (e.ctrlKey && e.code === 'ShiftLeft') {
+    detectLang();
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+  }
+
+  switch (e.key) {
+  case 'Backspace': {
+    textareaCopy.value = textareaCopy.value.substring(0, positionCaret - 1)
+    + textareaCopy.value.substring(positionCaret);
+    textareaCopy.setSelectionRange(positionCaret - 1, positionCaret - 1);
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+
+    break;
+  }
+  case 'CapsLock': {
+    pressCaps();
+    btn.classList.toggle('active');
+    keysPress.set(e.code, btn);
+    break;
+  }
+  case 'Shift': {
+    pressShift();
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+    break;
+  }
+  default: {
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+    break;
+  }
+  }
 }
 
-const keysPress = new Map();
+// Key Up
+function keyUp(e) {
+  switch (e.key) {
+  case 'CapsLock': {
+    pressCaps(true);
+    break;
+  }
+  case 'Shift': {
+    pressShift(true);
+    break;
+  }
+  default: {
+    break;
+  }
+  }
+  if (keysPress.has(e.code)) {
+    keysPress.get(e.code).classList.remove('key_press', 'active');
+    keysPress.delete(e.code);
+  }
+}
+
+function clickKey(e) {
+  positionCaret = textareaCopy.selectionStart;
+  console.log(e);
+  textareaCopy.focus();
+  const btn = e.target;
+
+  if (e.target.classList.contains('key') && isNotControlBtn(e.target)) {
+    textareaCopy.value += e.target.textContent;
+  }
+
+  // if (e.ctrlKey && e.code === 'ShiftLeft') {
+  //   detectLang();
+  //   btn.classList.add('key_press');
+  //   keysPress.set(e.code, btn);
+  // }
+
+  switch (e.target.id) {
+  case 'Backspace': {
+    textareaCopy.value = textareaCopy.value.substring(0, positionCaret - 1)
+    + textareaCopy.value.substring(positionCaret);
+    textareaCopy.setSelectionRange(positionCaret - 1, positionCaret - 1);
+    break;
+  }
+  case 'CapsLock': {
+    pressCaps(btn.classList.contains('active'));
+    btn.classList.toggle('active');
+    break;
+  }
+  case 'ShiftLeft': {
+    pressShift();
+    break;
+  }
+  }
+}
+
+function isNotControlBtn(btn) {
+  if (btn.classList.contains('key_control')) {
+    return false;
+  }
+  return true;
+}
 
 function pressCaps(up = false) {
   document.querySelectorAll('.key').forEach((el) => {
@@ -794,75 +932,15 @@ function detectLang() {
   }
 }
 
-function keyDown(e) {
-  if (e.repeat) {
-    return;
-  }
-  const btn = document.querySelector(`#${e.code}`);
-
-  if (e.ctrlKey && e.code === 'ShiftLeft') {
-    detectLang();
-    btn.classList.add('key_press');
-    keysPress.set(e.code, btn);
-  }
-
-  switch (e.key) {
-  case 'CapsLock': {
-    btn.classList.add('active');
-    pressCaps();
-    keysPress.set(e.code, btn);
-
-    break;
-  }
-  case 'Shift': {
-    pressShift();
-    btn.classList.add('key_press');
-    keysPress.set(e.code, btn);
-    break;
-  }
-  default: {
-    btn.classList.add('key_press');
-    keysPress.set(e.code, btn);
-    break;
-  }
-  }
-}
-
-function keyUp(e) {
-  switch (e.key) {
-  case 'CapsLock': {
-    pressCaps(true);
-    break;
-  }
-  case 'Shift': {
-    pressShift(true);
-    break;
-  }
-  default: {
-    break;
-  }
-  }
-  if (keysPress.has(e.code)) {
-    keysPress.get(e.code).classList.remove('key_press', 'active');
-    keysPress.delete(e.code);
-  }
-}
-
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
+keyboardCopy.addEventListener('click', clickKey);
+textareaCopy.addEventListener('keydown', (e) => {
+  e.preventDefault();
+});
 
-function init() {
-  if (!localStorage.getItem(LOCALSTORAGENAME)) {
-    localStorage.setItem(LOCALSTORAGENAME, lang);
-  }
-  lang = localStorage.getItem(LOCALSTORAGENAME);
+textareaCopy.addEventListener('click', (e) => {
+  positionCaret = textareaCopy.selectionStart;
+});
 
-  const container = document.createElement('div');
-  container.classList.add('container');
-
-  const keyboard = createKeyboard();
-  container.append(keyboard);
-  document.body.append(container);
-}
-
-init();
+// console.log(textareaCopy.selectionStart);

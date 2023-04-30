@@ -4,14 +4,21 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  -khtml-user-select: none;
+  /* Konqueror */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
 }
 
 html {
-  font-size: 10px;
-}
-
-body {
-  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
 }
 
 :root {
@@ -22,12 +29,42 @@ body {
   --caps-color: #8df16e;
 }
 
+body {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+
+}
+
 .container {
+  padding: 20px;
+
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding-top: 100px;
   margin: 0 auto;
   max-width: 900px;
+}
+
+#textarea {
+  margin-bottom: 30px;
+  padding: 20px;
+  font-size: 18px;
+  color: #535353c3;
+  font-weight: 400;
+  width: 100%;
+  height: 250px;
+  resize: none;
+
+  border: 3px solid var(--primary-color);
+  border-radius: 10px;
+  transition: all 0.2s;
+  outline: none;
+
+}
+
+#textarea:focus {
+  border-color: var(--third-color);
 }
 
 .keyboard {
@@ -37,7 +74,6 @@ body {
   padding: 0 20px;
   padding-top: 40px;
   padding-bottom: 40px;
-
   background-color: var(--basis-color);
   border-radius: 10px;
 }
@@ -49,10 +85,14 @@ body {
 }
 
 .key {
+  font-family: 'Poppins', sans-serif;
   width: 40px;
   height: 40px;
   border: none;
   background-color: var(--primary-color);
+  color: #353434b3;
+  font-weight: 500;
+
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.1s;
@@ -64,15 +104,17 @@ body {
 
 .key:active {
   transform: scale(0.97);
+  background-color: #72c0ab92;
+
+}
+
+.key_control {
+  background-color: var(--second-color);
 }
 
 .key_press {
   transform: scale(0.9);
   background-color: #72c0ab92;
-}
-
-.key_control {
-  background-color: var(--second-color);
 }
 
 #CapsLock {
