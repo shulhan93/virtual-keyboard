@@ -727,7 +727,7 @@ function init() {
   const description = document.createElement('p');
   description.classList.add('description');
   description.innerHTML = `Клавиатура создана в операционной системе <span>macOS</span>  <br>
-  Для переключения языка комбинация: левыe ctrl + shift`;
+  Для переключения языка комбинация: левыe ctrl + shift `;
   container.append(textarea, keyboard, description);
   document.body.append(container);
 }
@@ -837,6 +837,14 @@ function keyDown(e) {
     textareaCopy.setSelectionRange(positionCaret, positionCaret);
     break;
   }
+  case 'Delete': {
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+    textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
+    + textareaCopy.value.substring(positionCaret + 1);
+    textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    break;
+  }
   default: {
     btn.classList.add('key_press');
     keysPress.set(e.code, btn);
@@ -905,6 +913,13 @@ function clickKey(e) {
   case 'Enter': {
     textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret - 1)
     }\n${textareaCopy.value.substring(positionCaret)}`;
+    textareaCopy.setSelectionRange(positionCaret, positionCaret);
+    break;
+  }
+
+  case 'Delete': {
+    textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
+    + textareaCopy.value.substring(positionCaret + 1);
     textareaCopy.setSelectionRange(positionCaret, positionCaret);
     break;
   }
