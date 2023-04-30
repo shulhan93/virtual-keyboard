@@ -723,7 +723,12 @@ function init() {
 
   const keyboard = createKeyboard();
   keyboardCopy = keyboard;
-  container.append(textarea, keyboard);
+
+  const description = document.createElement('p');
+  description.classList.add('description');
+  description.innerHTML = `Клавиатура создана в операционной системе <span>macOS</span>  <br>
+  Для переключения языка комбинация: левыe ctrl + shift`;
+  container.append(textarea, keyboard, description);
   document.body.append(container);
 }
 init();
@@ -788,8 +793,11 @@ function keyDown(e) {
 
   const btn = document.querySelector(`#${e.code}`);
 
-  if (isNotControlBtn(btn)) {
-    textareaCopy.value += btn.textContent;
+  if (btn.id.startsWith('Arrow') || isNotControlBtn(btn)) {
+    // textareaCopy.value += btn.textContent;
+    textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
+    + btn.textContent + textareaCopy.value.substring(positionCaret);
+    textareaCopy.setSelectionRange(positionCaret + 1, positionCaret + 1);
   }
 
   if (e.ctrlKey && e.code === 'ShiftLeft') {
@@ -818,6 +826,15 @@ function keyDown(e) {
     pressShift();
     btn.classList.add('key_press');
     keysPress.set(e.code, btn);
+    break;
+  }
+
+  case 'Enter': {
+    btn.classList.add('key_press');
+    keysPress.set(e.code, btn);
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret - 1)
+    }\n${textareaCopy.value.substring(positionCaret)}`;
+    textareaCopy.setSelectionRange(positionCaret, positionCaret);
     break;
   }
   default: {
@@ -855,8 +872,11 @@ function clickKey(e) {
   textareaCopy.focus();
   const btn = e.target;
 
-  if (e.target.classList.contains('key') && isNotControlBtn(e.target)) {
-    textareaCopy.value += e.target.textContent;
+  if (btn.id.startsWith('Arrow') || e.target.classList.contains('key') && isNotControlBtn(e.target)) {
+    // textareaCopy.value += e.target.textContent;
+    textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
+    + btn.textContent + textareaCopy.value.substring(positionCaret);
+    textareaCopy.setSelectionRange(positionCaret + 1, positionCaret + 1);
   }
 
   // if (e.ctrlKey && e.code === 'ShiftLeft') {
@@ -879,6 +899,13 @@ function clickKey(e) {
   }
   case 'ShiftLeft': {
     pressShift();
+    break;
+  }
+
+  case 'Enter': {
+    textareaCopy.value = `${textareaCopy.value.substring(0, positionCaret - 1)
+    }\n${textareaCopy.value.substring(positionCaret)}`;
+    textareaCopy.setSelectionRange(positionCaret, positionCaret);
     break;
   }
   }

@@ -147,3 +147,13 @@ body {
 .key_space {
   width: 270px;
 }
+
+.description {
+  font-size: 14px;
+  margin-top: 15px;
+  background-color: var(--primary-color);
+  color: #353434b3;
+  font-weight: 600;
+  padding: 10px 15px;
+  border-radius: 10px;
+}
