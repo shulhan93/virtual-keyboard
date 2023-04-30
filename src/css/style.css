@@ -68,6 +68,7 @@ body {
 
 .key_press {
   transform: scale(0.9);
+  background-color: #72c0ab92;
 }
 
 .key_control {

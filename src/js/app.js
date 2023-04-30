@@ -587,10 +587,10 @@ const keys = [
     {
       key: 'ArrowUp',
       en: {
-        lowerCase: '&#9206;',
+        lowerCase: '&#8593;',
       },
       ru: {
-        lowerCase: '&#9206;',
+        lowerCase: '&#8593;',
       },
       control: 'true',
     },
@@ -671,30 +671,30 @@ const keys = [
     {
       key: 'ArrowLeft',
       en: {
-        lowerCase: '&#9204;',
+        lowerCase: '&#8592;',
       },
       ru: {
-        lowerCase: '&#9204;',
+        lowerCase: '&#8592;',
       },
       control: 'true',
     },
     {
       key: 'ArrowDown',
       en: {
-        lowerCase: '&#9207;',
+        lowerCase: '&#8595;',
       },
       ru: {
-        lowerCase: '&#9207;',
+        lowerCase: '&#8595;',
       },
       control: 'true',
     },
     {
       key: 'ArrowRight',
       en: {
-        lowerCase: '&#9205;',
+        lowerCase: '&#8594;',
       },
       ru: {
-        lowerCase: '&#9205;',
+        lowerCase: '&#8594;',
       },
       control: 'true',
     },
@@ -711,6 +711,10 @@ function createKey(obj) {
   btn.innerHTML = obj[lang].lowerCase;
   if (obj.control) {
     btn.classList.add('key_control');
+  }
+
+  if (obj.key.startsWith('Arrow')) {
+    btn.classList.add('key_arrow');
   }
   if (obj[lang].lowerCase === ' ' || obj[lang].lowerCase === 'Enter' || obj[lang].lowerCase === 'Tab') {
     btn.classList.add('key_colorful');
