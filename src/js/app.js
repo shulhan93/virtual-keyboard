@@ -544,7 +544,7 @@ const keys = [
       key: 'KeyM',
       en: {
         lowerCase: 'm',
-        shift: '<',
+        shift: 'M',
       },
       ru: {
         lowerCase: 'ь',
@@ -866,7 +866,6 @@ function keyDown(e) {
 
 // Key Up
 function keyUp(e) {
-  console.log(window.navigator.userAgent);
   switch (e.key) {
   case 'CapsLock': {
     if (!window.navigator.userAgent.includes('Macintosh')) {
@@ -917,7 +916,8 @@ function clickKey(e) {
   }
   case 'ShiftRight':
   case 'ShiftLeft': {
-    if (e.timeStamp > 10000 && !btn.classList.contains('key_press')) {
+    // if (e.timeStamp > 10000 && !btn.classList.contains('key_press')) {
+    if (!btn.classList.contains('key_press')) {
       btn.classList.add('key_press');
       pressShift(false);
       e.timeStamp = 0;
@@ -925,6 +925,7 @@ function clickKey(e) {
       pressShift(true);
       btn.classList.remove('key_press');
     }
+
     break;
   }
 
