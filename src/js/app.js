@@ -816,8 +816,11 @@ function keyDown(e) {
     break;
   }
   case 'CapsLock': {
-    pressCaps();
+    if (e.repeat) {
+      return;
+    }
     btn.classList.toggle('active');
+    pressCaps(btn.classList.contains('active'));
     keysPress.set(e.code, btn);
     break;
   }
@@ -866,7 +869,8 @@ function keyDown(e) {
 function keyUp(e) {
   switch (e.key) {
   case 'CapsLock': {
-    pressCaps(true);
+    pressCaps(false);
+    // console.log(e);
     break;
   }
   case 'Shift': {
@@ -902,8 +906,8 @@ function clickKey(e) {
     break;
   }
   case 'CapsLock': {
-    pressCaps(btn.classList.contains('active'));
     btn.classList.toggle('active');
+    pressCaps(btn.classList.contains('active'));
     break;
   }
   case 'ShiftRight':
@@ -950,12 +954,13 @@ function isNotControlBtn(btn) {
   return true;
 }
 
-function pressCaps(up = false) {
+function pressCaps(active = false) {
+  console.log(active);
   document.querySelectorAll('.key').forEach((el) => {
     const key = el;
-    if (key.id.startsWith('Key') && !up) {
+    if (key.id.startsWith('Key') && active) {
       key.innerHTML = key.innerHTML.toLocaleUpperCase();
-    } else if (key.id.startsWith('Key') && up) {
+    } else if (key.id.startsWith('Key') && !active) {
       key.innerHTML = key.innerHTML.toLowerCase();
     }
   });
