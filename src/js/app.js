@@ -784,12 +784,15 @@ function createKey(obj) {
 
 // Key Down
 function keyDown(e) {
+  console.log(e);
   positionCaret = textareaCopy.selectionStart;
 
   textareaCopy.focus();
 
   const btn = document.querySelector(`#${e.code}`);
-
+  if (!btn) {
+    return;
+  }
   if (btn.id.startsWith('Arrow') || isNotControlBtn(btn)) {
     textareaCopy.value = textareaCopy.value.substring(0, positionCaret)
     + btn.textContent + textareaCopy.value.substring(positionCaret);
@@ -905,8 +908,15 @@ function clickKey(e) {
   }
   case 'ShiftRight':
   case 'ShiftLeft': {
-    console.log('s  ');
-    pressShift(true);
+    if (e.timeStamp > 10000 && !btn.classList.contains('key_press')) {
+      btn.classList.add('key_press');
+      pressShift(false);
+      console.log(e);
+      e.timeStamp = 0;
+    } else {
+      pressShift(true);
+      btn.classList.remove('key_press');
+    }
     break;
   }
 

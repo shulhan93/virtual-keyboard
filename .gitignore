@@ -1,5 +1,4 @@
 /node_modules
-.eslintrc
 .prettierignore
 package-lock.json
 package.json
