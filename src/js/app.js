@@ -866,8 +866,15 @@ function keyDown(e) {
 
 // Key Up
 function keyUp(e) {
+  console.log(window.navigator.userAgent);
   switch (e.key) {
   case 'CapsLock': {
+    if (!window.navigator.userAgent.includes('Macintosh')) {
+      if (document.querySelector('#CapsLock').classList.contains('active')) {
+        return;
+      }
+    }
+
     pressCaps(false);
     break;
   }
