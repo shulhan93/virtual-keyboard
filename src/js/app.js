@@ -784,7 +784,6 @@ function createKey(obj) {
 
 // Key Down
 function keyDown(e) {
-  console.log(e);
   positionCaret = textareaCopy.selectionStart;
 
   textareaCopy.focus();
@@ -870,7 +869,6 @@ function keyUp(e) {
   switch (e.key) {
   case 'CapsLock': {
     pressCaps(false);
-    // console.log(e);
     break;
   }
   case 'Shift': {
@@ -915,7 +913,6 @@ function clickKey(e) {
     if (e.timeStamp > 10000 && !btn.classList.contains('key_press')) {
       btn.classList.add('key_press');
       pressShift(false);
-      console.log(e);
       e.timeStamp = 0;
     } else {
       pressShift(true);
@@ -955,7 +952,6 @@ function isNotControlBtn(btn) {
 }
 
 function pressCaps(active = false) {
-  console.log(active);
   document.querySelectorAll('.key').forEach((el) => {
     const key = el;
     if (key.id.startsWith('Key') && active) {
