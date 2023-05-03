@@ -894,6 +894,7 @@ function keyUp(e) {
 function clickKey(e) {
   positionCaret = textareaCopy.selectionStart;
   textareaCopy.focus();
+
   const btn = e.target;
 
   if (btn.id.startsWith('Arrow') || e.target.classList.contains('key') && isNotControlBtn(e.target)) {
